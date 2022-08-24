@@ -1,0 +1,631 @@
+{
+	"info": {
+		"_postman_id": "4596dc23-f037-4d54-9566-3e3454acc789",
+		"name": "Postman-newman",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19171813"
+	},
+	"item": [
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "List of products",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"eval(globals.basicTests)()\r",
+									"pm.test(\"Content-Type header is application/json\", () => {\r",
+									"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/products",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create new product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"eval(globals.basicTests)()\r",
+									"const jsonData = pm.response.json();\r",
+									"pm.test(\"Test all response values\", function () {\r",
+									"    pm.expect(jsonData.id).to.be.a(\"number\")\r",
+									"    pm.expect(jsonData.name).to.be.a(\"String\")\r",
+									"    pm.expect(jsonData.sku).to.be.a(\"number\")\r",
+									"    pm.expect(jsonData.description).to.be.a(\"String\");\r",
+									"    pm.expect(jsonData.price).to.be.a(\"number\")\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"pahlava_medovaya\",\r\n    \"price\": 45,\r\n    \"sku\":123321123,\r\n    \"description\":\"More often selling with shrimps and sweet corn\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/products",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get product by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"eval(globals.basicTests)()\r",
+									"const jsonData = pm.response.json();\r",
+									"pm.test(\"Response body has keys: name, price, description\", () => {\r",
+									"  pm.expect(jsonData.name).to.eql(\"pahlava_medovaya\");\r",
+									"  pm.expect(jsonData.price).to.eql(45);\r",
+									"  pm.expect(jsonData.description).to.eql(\"More often selling with shrimps and sweet corn\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/products/21",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"products",
+								"21"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update product price",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Response body has updated value: price\", () => {\r",
+									"  pm.expect(jsonData.price).to.eql(228);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"price\": 228,\r\n    \"id\": 21\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/products",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"eval(globals.basicTests)()\r",
+									"pm.test(\"Deleted product 'pahlava_medovaya' with id=21\", () => {\r",
+									"  const responseJson = pm.response.json();\r",
+									"  pm.expect(responseJson.id).to.eql(21);\r",
+									"  pm.expect(responseJson.name).to.eql(\"pahlava_medovaya\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/products/21",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"products",
+								"21"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "List of orders",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"eval(globals.basicTests)()\r",
+									"const jsonData = pm.response.json();\r",
+									"pm.test(\"Response is array\", () => {\r",
+									"  pm.expect(jsonData).to.be.an(\"array\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/orders",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create new order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"eval(globals.basicTests)()\r",
+									"pm.test(\"Test all response keys\", function () {\r",
+									"    pm.response.to.have.jsonBody('name')\r",
+									"    .and.to.have.jsonBody('sku')\r",
+									"    .and.to.have.jsonBody('id')\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Give me please pahlava_medovaya\",\r\n    \"sku\": 1234445445226765\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/orders",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get order by id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"eval(globals.basicTests)()\r",
+									"const jsonData = pm.response.json();\r",
+									"pm.test(\"Response body has values: name, id\", () => {\r",
+									"  pm.expect(jsonData.name).to.eql(\"Give me please pahlava_medovaya\");\r",
+									"  pm.expect(jsonData.id).to.eql(6);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/orders/6",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"orders",
+								"6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"eval(globals.basicTests)()\r",
+									"const jsonData = pm.response.json();\r",
+									"pm.test(\"Response body has values for: name, id\", () => {\r",
+									"  pm.expect(jsonData.name).to.eql(\"Give me please dve pahlava_medovaya\");\r",
+									"  pm.expect(jsonData.id).to.eql(6);\r",
+									"});\r",
+									"pm.test(\"Date header is present\", () => {\r",
+									"  pm.response.to.have.header(\"Date\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Give me please dve pahlava_medovaya\",\r\n    \"id\": 6\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/orders",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"eval(globals.basicTests)()\r",
+									"const jsonData = pm.response.json();\r",
+									"pm.test(\"Response body has values for: name, id, sku\", () => {\r",
+									"  pm.expect(jsonData.name).to.eql(\"Give me please dve pahlava_medovaya\");\r",
+									"  pm.expect(jsonData.sku).to.eql(1234445445226765);\r",
+									"  pm.expect(jsonData.id).to.eql(6);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/orders/6",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"orders",
+								"6"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Users list",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"eval(globals.basicTests)()\r",
+									"const jsonData = pm.response.json();\r",
+									"pm.test(\"Response is array\", () => {\r",
+									"  pm.expect(jsonData).to.be.an(\"array\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/users",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create new user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"eval(globals.basicTests)()\r",
+									"const jsonData = pm.response.json();\r",
+									"pm.test(\"Response body has correct values\", () => {\r",
+									"  pm.expect(jsonData.firstName).to.eql(\"Optimys\");\r",
+									"  pm.expect(jsonData.lastName).to.eql(\"Prime\");\r",
+									"  pm.expect(jsonData.email).to.eql(\"optimys.prime@gmail.com\");\r",
+									"  pm.expect(jsonData.dateOfBirth).to.eql(\"0001-01-01\");\r",
+									"  pm.expect(jsonData.emailVerified).to.eql(true);\r",
+									"  pm.expect(jsonData.signUpDate).to.eql(\"2022-08-24\");\r",
+									"  pm.expect(jsonData.status).to.eql(\"active\");\r",
+									"  pm.expect(jsonData.level).to.eql(\"Prime\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Optimys\",\r\n    \"lastName\": \"Prime\",\r\n    \"email\": \"optimys.prime@gmail.com\",\r\n    \"dateOfBirth\": \"0001-01-01\",\r\n    \"emailVerified\": true,\r\n    \"signUpDate\": \"2022-08-24\",\r\n    \"status\": \"active\",\r\n    \"level\": \"Prime\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/users",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get user by id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"eval(globals.basicTests)()\r",
+									"const jsonData = pm.response.json();\r",
+									"pm.test(\"Test all response keys\", function () {\r",
+									"    pm.response.to.have.jsonBody('id')\r",
+									"    .and.to.have.jsonBody('firstName')\r",
+									"    .and.to.have.jsonBody('lastName')\r",
+									"    .and.to.have.jsonBody('email')\r",
+									"    .and.to.have.jsonBody('dateOfBirth')\r",
+									"    .and.to.have.jsonBody('emailVerified')\r",
+									"    .and.to.have.jsonBody('signUpDate')\r",
+									"    .and.to.have.jsonBody('status')\r",
+									"    .and.to.have.jsonBody('level')\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/users/10",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"users",
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"eval(globals.basicTests)()\r",
+									"const jsonData = pm.response.json();\r",
+									"pm.test(\"Response body has correct values\", () => {\r",
+									"  pm.expect(jsonData.level).to.eql(\"Mega prime\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 10,\r\n    \"level\": \"Mega prime\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/users",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"eval(globals.basicTests)()\r",
+									"const jsonData = pm.response.json();\r",
+									"pm.test(\"Deleted user has id=10\", () => {\r",
+									"  pm.expect(jsonData.id).to.eql(10);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/users/10",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"users",
+								"10"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"postman.setGlobalVariable('basicTests', ()=> {",
+					"    pm.test(\"Status code is 200\", function () {",
+					"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);",
+					"});",
+					"pm.test(\"Response time is less than 200ms\", function () {",
+					"    pm.expect(pm.response.responseTime).to.be.below(200);",
+					"});",
+					"});"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": "http://localhost:3000",
+			"type": "string"
+		}
+	]
+}
