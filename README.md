@@ -28,5 +28,7 @@ Routes `/products`, `/orders` and `/users`. Below is a table of supported operat
 6. Run collection in Postman
 ----
 ## Additional info🔍
-[Click here to observe HTML report](https://markuslarson.github.io/Postman-ghActions/)
-[How to run collection tutorial](https://learning.postman.com/docs/running-collections/intro-to-collection-runs/)
+1.[Click here to observe HTML report](https://markuslarson.github.io/Postman-ghActions/)
+
+
+2.[How to run collection tutorial](https://learning.postman.com/docs/running-collections/intro-to-collection-runs/)
