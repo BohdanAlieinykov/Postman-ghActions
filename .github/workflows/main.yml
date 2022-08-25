@@ -34,6 +34,28 @@ jobs:
       - name: Run POSTMAN collection
         run: |
           newman run petstore.postman_collection.json -r cli,htmlextra --reporter-htmlextra-export testResults/htmlreport.html
+          
+      # Run Newman htmlextra image
+      - name: Build the project
+        run: |
+          echo Start to build,
+          docker container run -t -v $(pwd):/etc/newman dannydainton/htmlextra \
+          run 'petstore.postman_collection.json' \
+          -k \
+          -r cli,htmlextra \
+          --reporter-htmlextra-export /etc/newman/docs/index.html \
+          --reporter-htmlextra-browserTitle "QA Newman" \
+          --reporter-htmlextra-title "QA Newman - HTMLEXTRA, GitHub Actions e GitHub Pages"
+      # Show the directory and list its contents
+      - name: List workdir
+        run:  ls -lathr ./docs
+
+      # Publish report on the github pages
+      - name: Publish Report
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.my_tok }}
+          publish_dir : ./docs
 
 
       # Upload the contents of Test Results directory to workspace
