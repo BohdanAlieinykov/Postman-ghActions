@@ -29,3 +29,4 @@ Routes `/products`, `/orders` and `/users`. Below is a table of supported operat
 ----
 ## Additional info🔍
 [Click here to observe HTML report](https://markuslarson.github.io/Postman-ghActions/)
+[How to run collection tutorial](https://learning.postman.com/docs/running-collections/intro-to-collection-runs/)
