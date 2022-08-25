@@ -47,5 +47,5 @@ jobs:
           # в данном случае его название KEY
           GITHUB_TOKEN: ${{ secrets.my_tok }}
           BRANCH: gh-pages
-          FOLDER: public
+          FOLDER: testResults/htmlreport.html
           CLEAN: true
