@@ -1,59 +1,46 @@
-name: Project test & build
+name: Build And Publish Report
 
-# целевые события для запуска
-# в данном случае это push и pull_request, в ветку master
+# Controls when the action will run. 
 on:
+  # Triggers the workflow on push or pull request events but only for the main branch
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
-# выполняемые действия
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  build-and-deploy:
+  # This workflow contains a single job called "Publish Report"
+  publish-report:
+    # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    
-    # запускаются по шагам
-    # name - название шага
-    # в github actions будет выводиться название шага, и процессы
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: Checkout 🛎️
-        uses: actions/checkout@v2.3.1
-        with:
-          persist-credentials: false
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
 
-      - name: Install Node
-        uses: actions/setup-node@v1
-        with:
-          node-version: "14.x"
-          
-      - name: Install newman
+      # Run Newman htmlextra image
+      - name: Build the project
         run: |
-          npm install --save-dev -g newman@^5.1.2
-          npm install -g newman-reporter-htmlextra
-          
-      - name: Make Directory for results
-        run: mkdir -p testResults
+          echo Start to build,
+          docker container run -t -v $(pwd):/etc/newman dannydainton/htmlextra \
+          run 'petstore.postman_collection.json' \
+          -k \
+          -r cli,htmlextra \
+          --reporter-htmlextra-export /etc/newman/docs/index.html \
+          --reporter-htmlextra-browserTitle "QA Newman" \
+          --reporter-htmlextra-title "QA Newman - HTMLEXTRA, GitHub Actions e GitHub Pages"
+      # Show the directory and list its contents
+      - name: List workdir
+        run:  ls -lathr ./docs
 
-      - name: Run POSTMAN collection
-        run: |
-          newman run petstore.postman_collection.json -r cli,htmlextra --reporter-htmlextra-export testResults/htmlreport.html
-          
-      - name: Output the run Details
-        uses: actions/upload-artifact@v2
+      # Publish report on the github pages
+      - name: Publish Report
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          name: RunReports
-          path: testResults
-
-      - name: Build 👷
-        run: npm run build
-
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@3.7.1
-        with:
-          # в значение GITHUB_TOKEN помещается ссылка на ваш секрет в репозитории
-          # в данном случае его название KEY
-          GITHUB_TOKEN: ${{ secrets.my_tok }}
-          BRANCH: gh-pages
-          FOLDER: testResults/htmlreport.html
-          CLEAN: true
+          github_token: ${{ secrets.my_tok }}
+          publish_dir : ./docs
